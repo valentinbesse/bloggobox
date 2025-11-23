@@ -1,45 +1,123 @@
-# Node
-node_modules/
+# ==============================
+# 📦 GLOBAL
+# ==============================
+
+# Logs
+logs
+*.log
 npm-debug.log*
+pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
 
-# Build output
-.svelte-kit/
-build/
-dist/
-.vite/
+# OS files
+.DS_Store
+Thumbs.db
 
-# Environment & secrets
+# Env
 .env
 .env.*
 !.env.example
 
-# Logs
-*.log
-logs/
-pids/
-*.pid
-*.seed
-*.pid.lock
+# Node
+node_modules/
+dist/
+build/
+.cache/
+.tmp/
 
-# Editor folders
+# Coverage
+coverage/
+*.lcov
+
+# Editor junk
 .vscode/
 .idea/
+*.swp
 
-# System files
-.DS_Store
-Thumbs.db
+# ==============================
+# 🧩 MONOREPO SPECIFIC
+# ==============================
 
-# Playwright
-/playwright-report/
-/test-results/
-blob-report/
+# pnpm
+pnpm-lock.yaml
+.pnpm-store/
 
-# Drizzle
-drizzle/migrations/.snapshot
+# Turbo repo (if used)
+turbo/
+turbo.json
 
-# Docker
+# TypeScript build files
+*.tsbuildinfo
+
+# Shared package build
+/shared/dist/
+
+# ==============================
+# 🔧 BACKEND
+# ==============================
+
+backend/node_modules/
+backend/dist/
+backend/build/
+backend/.eslintcache
+
+# Prisma (si utilisé)
+backend/prisma/migrations/
+backend/prisma/*.db
+
+# SQLite (si utilisé)
+*.sqlite
+*.sqlite-journal
+
+# ==============================
+# 🎨 FRONTEND
+# ==============================
+
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/.svelte-kit/
+frontend/build/
+frontend/.eslintcache
+
+# SvelteKit stuff (si utilisé)
+.svelte-kit/
+
+# Next.js
+.next/
+out/
+
+# ==============================
+# 🐳 DOCKER
+# ==============================
+
 docker-data/
-pgdata/
+docker-volume/
+*.pid
+*.seed
+
+# ==============================
+# 🧪 TESTING
+# ==============================
+
+.jest/
+jest-cache/
+jest-coverage/
+playwright-report/
+test-results/
+cypress/videos/
+cypress/screenshots/
+
+# ==============================
+# 📄 MISC
+# ==============================
+
+*.pem
+*.crt
+*.key
+*.tgz
+
+# Local dev files
+*.local
+*.secret
