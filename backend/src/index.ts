@@ -1,9 +1,11 @@
-import { serve } from '@hono/node-server';
+import './env';
 import app from './app';
-import 'dotenv/config';
+import { serve } from '@hono/node-server';
+
 
 const port = Number(process.env.PORT) || 3001;
 console.log(`Backend Hono running on http://localhost:${port}`);
+
 
 serve({
   fetch: app.fetch,

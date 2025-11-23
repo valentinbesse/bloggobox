@@ -1,6 +1,9 @@
+import 'dotenv/config';
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 import { cors } from 'hono/cors';
+import { db } from './lib/db/drizzle';
+import { articles } from './lib/db/schema';
 
 const app = new Hono();
 
@@ -17,12 +20,13 @@ app.use('*', logger());
 // Route santé
 app.get('/health', (c) => c.json({ status: 'ok' }));
 
-// Articles mock
-app.get('/articles', (c) =>
-  c.json([
-    { id: 1, title: 'Premier article', content: 'Contenu de test' },
-    { id: 2, title: 'Deuxième article', content: 'Encore du contenu' }
-  ])
-);
+/**
+ * Récupère la liste des articles.
+ * @return Liste des articles.
+ */
+app.get('/articles', async (c) => {
+  const list = await db.select().from(articles);
+  return c.json(list);
+});
 
 export default app;
