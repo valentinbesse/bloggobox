@@ -1,0 +1,21 @@
+{
+  "name": "bloggobox",
+  "version": "1.0.0",
+  "description": "Bloggobox est un projet full-stack moderne conçu pour apprendre, expérimenter et maîtriser : → SvelteKit, Hono, TypeScript strict, Drizzle ORM, PostgreSQL, TDD, CI/CD GitHub Actions, et Docker.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/valentinbesse/bloggobox.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/valentinbesse/bloggobox/issues"
+  },
+  "homepage": "https://github.com/valentinbesse/bloggobox#readme"
+}
