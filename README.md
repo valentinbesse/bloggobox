@@ -1,138 +1,200 @@
 # Bloggobox — Monorepo
 
-Bloggobox est un projet personnel visant à créer un blog moderne accompagné d’une interface d’administration permettant :
-- de publier, modifier et supprimer des articles ;
-- de modérer des commentaires ;
-- d’obtenir des statistiques personnalisées ;
-- d’apprendre et pratiquer le TypeScript, TDD, la CI/CD et la conteneurisation.
+Bloggobox est un projet full-stack moderne conçu pour apprendre, expérimenter et maîtriser :
+→ SvelteKit, Hono, TypeScript strict, Drizzle ORM, PostgreSQL, TDD, CI/CD GitHub Actions, et Docker.
 
-Ce dépôt utilise une architecture monorepo pour regrouper le backend, le frontend, et des packages partagés.
+Il propose un blog public (SSR) et une interface d’administration, ainsi qu’une API entièrement séparée.
 
-## 🗂️ Structure du monorepo
+## ✨ Fonctionnalités
+
+### 📰 Blog (Frontend)
+- Pages SSR (liste des articles, pages d’article)
+- Formulaire de commentaire (géré via API backend)
+- Tracking analytics léger (page views + sessionId)
+
+### 🔐 Admin (Frontend + Backend)
+- Auth admin simple (email + mot de passe hashé en env)
+- Création / édition / suppression d’articles
+- Modération des commentaires (pending | approved | rejected)
+- Dashboard statistiques
+
+### ⚙️ Backend (API REST)
+- API Hono rapide et typée
+- Drizzle ORM + PostgreSQL
+- Auth avec cookies signés
+- Endpoints :
+  - '/articles'
+  - '/comments'
+  - '/auth/login'
+  - '/analytics/events'
+- Validation stricte (Zod ou Valibot recommandé)
+
+## 🧱 Architecture du monorepo
 
 ``` tree
-bloggobox/
-├── backend/
-│   ├── src/
-│   │   ├── app/               # Services, usecases
-│   │   ├── domain/            # Entités, modèles, interfaces
-│   │   ├── infra/             # DB, API externes, adapters
-│   │   └── main.ts            # Entrée applicative
-│   ├── tests/                 # Tests unitaires
-│   └── package.json
-│
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   ├── hooks/
-│   │   └── utils/
-│   ├── tests/
-│   └── package.json
-│
-├── shared/                    # Code partagé entre front et back
-│   ├── models/                # Types communs (Post, Comment…)
-│   ├── utils/                 # Fonctions réutilisables
-│   ├── schemas/               # Validation (ex: Zod)
-│   └── package.json
-│
-├── infra/                     # Scripts et configuration d'infrastructure
-│   ├── docker/
-│   ├── scripts/
-│   └── ci/
-│
-├── .github/
-│   └── workflows/             # GitHub Actions (CI/CD)
-│
-├── package.json               # Config racine (ESLint, Prettier…)
-├── pnpm-workspace.yaml        # Configuration monorepo (pnpm)
-├── docker-compose.yml         # Stack de développement
-└── README.md
+/bloggobox
+  /frontend              → SvelteKit (SSR + pages + admin UI)
+    src/
+      routes/
+      lib/
+        api/            → wrappers fetch vers backend
+        auth/
+        types/
+  /backend               → API Hono + Drizzle ORM
+    src/
+      app.ts            → définition API
+      routes/
+      lib/
+        db/             → Drizzle config + schema
+        auth/
+        utils/
+  /packages              → libs partagées (types, schemas)
+  /infra                 → Docker, compose, CI/CD
+  package.json           → pnpm workspace
+  README.md
+
 
 ```
 
-## 🧰 Technologies principales
+## ⚙️ Stack technique
 
-### Backend
-- TypeScript
-- Framework au choix (Express, Hono, Deno Fresh, à définir)
-- Architecture modulaire (domain / app / infra)
-- Tests unitaires (TDD)
+### 🎨 Frontend (UI)
+- SvelteKit
+- SSR activé
+- Pages public + admin
+- Fetch API vers backend
+- TypeScript strict
 
-### Frontend
-- Framework au choix (Next.js, SvelteKit ou autre)
-- UI minimaliste et sobre
-- Tests frontend
+### ⚡ Backend (API)
+- Hono (framework ultra-rapide)
+- Endpoints REST
+- Validation (Zod/Valibot)
+- Cookies signés pour la session admin
 
-### Shared
-- Typescript partagé
-- Modèles, DTO, schémas (Zod recommandé)
+### 🗄 Base de données
+- PostgreSQL
+- Drizzle ORM
+  - Migrations type-safe
+  - Typed queries
+  - Schemas dans `/backend/src/lib/db/schema.ts`
 
-- Outils
-- pnpm workspaces pour une gestion monorepo rapide et efficace
-- Docker pour un environnement reproductible
-- GitHub Actions pour CI/CD
-- ESLint + Prettier pour garder un code propre
-- TDD-first pour encourager la qualité logicielle
+### 🧪 Tests
+- Vitest (unit)
+- Playwright (E2E léger)
+- Backend testé séparément (unit + integration)
 
-## 🚀 Installation
+### 🔄 CI/CD
+- GitHub Actions :
+  - Lint
+  - Tests (Vitest + Playwright)
+  - Build frontend
+  - Build backend
+  - Build images Docker
+  - Push GHCR
+- Déploiement : Render / Railway
 
-1️⃣ Installer les dépendances
+### 🐳 Conteneurs
+- `docker-compose.dev`
+  - frontend
+  - backend
+  - postgres
+  - pgAdmin
+- `Dockerfile.frontend` (prod)
+- `Dockerfile.backend` (prod)
+
+## 🚀 Démarrer le projet
+
+### 1) Installer les dépendances
 ``` bash
 pnpm install
 ```
 
-2️⃣ Lancer le backend
+### 2) Lancer l’environnement de développement
 ``` bash
-pnpm --filter backend dev
+docker compose up --build
 ```
 
-3️⃣ Lancer le frontend
-``` bash
-pnpm --filter frontend dev
+Services disponibles :
+- Frontend → http://localhost:5173
+- Backend → http://localhost:3001
+- Postgres → port 5432
+- pgAdmin → port 5050
+
+## 🔐 Configuration
+
+### Frontend `.env` (dans /frontend)
+``` ini
+PUBLIC_BACKEND_URL=http://localhost:3001
 ```
 
-4️⃣ Lancer tous les tests
-``` bash
-pnpm -w test
+### Backend `.env` (dans /backend)
+``` ini
+DATABASE_URL=postgres://postgres:password@postgres:5432/bloggobox
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD_HASH=$argon2id$...
+COOKIE_SECRET=long-random-string
 ```
 
-## 🧪 TDD & Tests
+Générer un hash :
+``` bash
+pnpm dlx bunx argon2-cli "monmotdepasse"
+```
 
-La philosophie du projet est d’intégrer les tests dès le début :
-- chaque module est isolé pour être facilement testable ;
-- des dossiers dédiés (tests/) existent dans chaque package ;
-- exécution test globale via : pnpm -w test.
+## 📦 Base de données & Migrations
 
-## 🛠️ Scripts utiles
+Depuis `/backend` :
+```bash
+pnpm drizzle-kit generate
+pnpm drizzle-kit push
+```
 
-Dans `package.json` racine :
-``` json
-{
-  "scripts": {
-    "dev": "echo \"Lancer chaque app individuellement\"",
-    "test": "pnpm -r test",
-    "lint": "eslint ."
-  }
-}
-````
+## 🧪 Lancer les tests
+Tests unitaires
+``` bash
+pnpm test
+```
 
-## 📦 Conteneurisation
-Le fichier `docker-compose.yml` facilite :
-- le lancement de l’environnement backend ;
-- la base de données ;
-- potentiellement un reverse proxy ou un service de storage local.
+Tests E2E (Playwright)
+``` bash
+pnpm exec playwright test
+``` 
 
-## 📈 CI/CD
-Dans `.github/workflows` :
-- build et test pour chaque package ;
-- pipeline optimisée par workspace ;
-- déploiement séparé du front et du back (à venir).
+## 🌐 API (Backend)
 
-## 📝 Roadmap
-- [ ] Implémentation backend (CRUD articles, modération)
-- [ ] UI administration minimaliste
-- [ ] Page publique du blog
-- [ ] Analytics custom
-- [ ] Pipeline CI/CD complète
-- [ ] Déploiement Docker
+Exemple d’endpoint Hono
+``` ts
+app.get('/articles', async (c) => {
+  const list = await db.select().from(articles)
+  return c.json(list)
+})
+```
+
+Exemple frontend : appel API
+``` ts
+const res = await fetch(`${PUBLIC_BACKEND_URL}/articles`)
+const articles = await res.json()
+```
+
+## 🚢 CI/CD GitHub Actions (résumé)
+
+### 1). CI
+- pnpm install
+- pnpm lint
+- pnpm test
+- pnpm build frontend
+- pnpm build backend
+- build images Docker
+
+### 2). CD
+- push vers GHCR
+- déploiement Railway/Render
+
+## 🛣️ Roadmap perso
+
+- [ ] Auth admin par token plus robuste
+- [ ] Ajout du brouillon/draft pour articles
+- [ ] Dashboard analytics amélioré
+- [ ] Recherche d’articles full-text (PG trigram)
+- [ ] Système de tags/catégories
+- [ ] Réécriture CLI pour importer/exporter données
+- [ ] Monitoring via Grafana
