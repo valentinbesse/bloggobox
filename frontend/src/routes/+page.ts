@@ -1,8 +1,6 @@
-import { api } from '$lib/api/client';
+import { apiGet } from '$lib/api/client';
 
 export async function load() {
-  const articles = await api('/articles', {
-     method: 'GET' 
-    });
+  const articles = await apiGet('/articles');
   return { articles };
 }
